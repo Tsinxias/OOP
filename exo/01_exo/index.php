@@ -1,6 +1,7 @@
 <?php
 include "html.php";
 include "form.php";
+include "validate.php";
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +56,10 @@ include "form.php";
   echo '<p>image links to video</p>';
   echo $html->a('https://www.youtube.com/watch?v=Pb2eucSXbQo', $html->img('', 'https://i0.wp.com/lavieetlesreves.com/wp-content/uploads/2017/03/A25-He%CC%81risson.jpg?resize=1280%2C640&ssl=1', '200px', "400px")).'<br>';
 
+
+  $validate = new Validator();
+  echo 'Hola mundo is a string : '.$validate->checkString('Hola mundo').'<br>';
+  echo '1253 is an int : '.$validate->checkInt(1253);
 
   echo $html->javaScript('random.js');
    ?>
