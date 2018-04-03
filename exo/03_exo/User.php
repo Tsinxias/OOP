@@ -1,47 +1,76 @@
 <?php
-// $postUser = $_POST['username'];
-// $postEmail = $_POST['email'];
-// $postPwd = $_POST['pwd'];
-
 class User {
-  private $id;
-  private $username;
-  private $email;
-  private $password;
-  private $connected;
-  public $db;
-  //
-  // function __construct($username, $email, $password, $connected ='no') {
-  //   $this->username = $username;
-  //   $this->email = $email;
-  //   $this->password = $password;
-  //   $this->connected = $connected;
-  //   // $this->db = $db;
-  // }
+  private $conn;
+  public $connected = '';
 
-  function insertNewUser($postUser, $postEmail, $postPwd, $connectionDBinUser) {
-    // $db = new DataBase('localhost', 'user', 'root', 'toor');
-    $insertUser = "INSERT INTO users set username = '$postUser', email='$postEmail', password='".sha1($postPwd)."'";
-    $requestInsert = $connectionDBinUser->prepare($insertUser);
-    $request->execute();
+  function __construct() {
+    $this->conn = new DataBase();
+    $this->conn = $this->conn->getmyDB();
   }
 
-  function setUsername($username, $connectionDBinUser) {
-    // $db = new DataBase('localhost', 'user', 'root', 'toor');
-    $setUsername = "UPDATE users SET username = '$username' WHERE id = 1";
-    $request = $connectionDBinUser->prepare($setUsername);
-    $request->execute();
-
+  function test() {
+    $stmt = $this->conn->prepare("SELECT * FROM users");
+    if ($stmt->execute()) {
+      while ($row = $stmt->fetch()) {
+        $fetch[] = $row;
+      }
+      return $fetch;
+    } else {
+      return false;
+    }
   }
 
-  function setEmail() {
 
+  function insertNewUSer($username, $email, $password, $connected = 'no') {
+    $insertUser = "INSERT INTO users SET username = '$username', email = '$email', password = '".sha1($password)."', connected = '$connected'";
+    $requestInsert = $this->conn->prepare($insertUser);
+    $requestInsert->execute();
   }
 
-  function remove() {
 
+  function login($loginUser, $loginPwd) {
+    // $loginUser = $_POST['loginUsername'];
+    // $loginPwd = $_POST['loginPwd'];
+
+    $selectLoger = "SELECT * FROM users WHERE username = '$loginUser' AND password = '".sha1($loginPwd)."'";
+    $requestSelect = $this->conn->query($selectLoger);
+    if ($loger = $requestSelect->fetch(PDO::FETCH_ASSOC)) {
+      session_start();
+      $_SESSION['username'] = $loginUser;
+      $_SESSION['password'] = $loginPwd;
+      $this->connected = 'yes';
+    }
+  }
+
+
+  function logout() {
+    // session_start ();
+    // On détruit les variables de notre session
+    session_unset ();
+    // On détruit notre session
+    session_destroy ();
+    // // On redirige le visiteur vers la page d'accueil
+    // header ('location: login.php');
+    $this->connected = 'no';
+  }
+
+  function setName($newUsername) {
+    $updateName = "UPDATE users SET username = '$newUsername' WHERE id = 1";
+    $requestSetName = $this->conn->prepare($updateName);
+    $requestSetName->execute();
+  }
+
+  function setEmail($newEmail) {
+    $updateEmail = "UPDATE users SET email = '$newEmail' WHERE id = 1";
+    $requestSetEmail = $this->conn->prepare($updateEmail);
+    $requestSetEmail->execute();
+  }
+
+
+  function deleteUser($deleteID) {
+    $deleteUser = "DELETE FROM users WHERE id = '$deleteID'";
+    $deleteRequest = $this->conn->prepare($deleteUser);
+    $deleteRequest->execute();
   }
 }
-
-$teddy = new User('Teddy', 'teddy@gmail.com', 'nicolay123');
  ?>
