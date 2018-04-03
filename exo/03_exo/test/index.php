@@ -61,21 +61,34 @@ include 'User.php';
     <button type="submit" name="loginBtn">Login</button>
   </form>
   <?php
-    $user->login('choco', sha1('lat'));
-    if (isset($_GET) && $_GET['connection']) {
-      echo 'connected';
+  //-----------CREATE NEW USER----------------//
+    // $user->insertNewUSer('pac', 'pac@man.com', 'man');
+
+
+  //-----------CONNEXION------------//
+    $user->login('choco', 'lat');
+
+    if ($user->connected == 'yes') {
+      echo 'connected<br>';
+    } else {
+      echo 'not connected<br>';
     }
 
-  // if (isset($_POST['loginBtn'])) {
-  //   $user->login();
-  //   if (isset($_GET) && $_GET['noConnection']) {
-  //     echo 'Wrong login or password';
-  //   }
-  //
-  //   if (isset($_GET) && $_GET['fillIn']) {
-  //     echo 'Please fill in Login field';
-  //   }
-  // }
+    if ($user->connected == 'yes') {
+      $user->logout();
+      echo 'just logged out<br>';
+    } else {
+      echo 'already logged out<br>';
+    }
+
+
+  //------------UPDATE INFO-------------//
+    // $user->setName('choco');
+    // $user->setEmail('choco@lat.chaud');
+
+
+  //-----------DELETE USER------------//
+  // $user->deleteUser(100);
    ?>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 class User {
   private $conn;
+  public $connected = '';
 
   function __construct() {
     $this->conn = new DataBase();
@@ -37,22 +38,39 @@ class User {
       session_start();
       $_SESSION['username'] = $loginUser;
       $_SESSION['password'] = $loginPwd;
-      header('Location: index.php?connected=yes');
+      $this->connected = 'yes';
     }
-    // $loger = $requestSelect->fetch(PDO::FETCH_ASSOC);
+  }
 
-    // if (!empty($loginUser) && !empty($loginPwd)) {
-    //   if ($loginUser == $loger['username'] && $loginPwd == sha1($loger['password'])) {
-    //     session_start();
-    //     $_SESSION['username'] = $loginUser;
-    //     $_SESSION['password'] = $loginPwd;
-    //     // header('Location: read.php');
-    //   } else {
-    //     // header('Location: index.php?noConnection=no');
-    //   }
-    // } else {
-    //   // header('Location: index.php?fillIn=no');
-    // }
+
+  function logout() {
+    // session_start ();
+    // On détruit les variables de notre session
+    session_unset ();
+    // On détruit notre session
+    session_destroy ();
+    // // On redirige le visiteur vers la page d'accueil
+    // header ('location: login.php');
+    $this->connected = 'no';
+  }
+
+  function setName($newUsername) {
+    $updateName = "UPDATE users SET username = '$newUsername' WHERE id = 1";
+    $requestSetName = $this->conn->prepare($updateName);
+    $requestSetName->execute();
+  }
+
+  function setEmail($newEmail) {
+    $updateEmail = "UPDATE users SET email = '$newEmail' WHERE id = 1";
+    $requestSetEmail = $this->conn->prepare($updateEmail);
+    $requestSetEmail->execute();
+  }
+
+
+  function deleteUser($deleteID) {
+    $deleteUser = "DELETE FROM users WHERE id = '$deleteID'";
+    $deleteRequest = $this->conn->prepare($deleteUser);
+    $deleteRequest->execute();
   }
 }
  ?>
